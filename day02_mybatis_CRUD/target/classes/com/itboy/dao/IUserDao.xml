@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itboy.dao.IUserDao">
+    <!--配置结果集，查询的结果集和数据库的属性名对应关系-->
+    <!--<resultMap id="userMap" type="com.itboy.domin.User">-->
+        <!--&lt;!&ndash;主键对应&ndash;&gt;-->
+        <!--<result property="userId"column="id"></result>-->
+        <!--&lt;!&ndash;非主键对应&ndash;&gt;-->
+        <!--<result property="userSex"column="sex"></result>-->
+        <!--<result property="userBirthday"column="birthday"></result>-->
+        <!--<result property="userAddress"column="address"></result>-->
+    <!--</resultMap>-->
+
+    <!--查询  有了resultMap  resultType可以更改为resultMap=“userMap” -->
+    <select id="findAll" resultType="com.itboy.domin.User">
+        SELECT *FROM USER
+    </select>
+    <!--添加-->
+    <insert id="saveUsers" parameterType="com.itboy.domin.User" >
+    <!--配置插入后，获取数据的id-->
+    <selectKey keyColumn="id" keyProperty="id" resultType="int" order="AFTER">
+        select last_insert_id();
+    </selectKey>
+        INSERT INTO USER(username,birthday,sex,address) VALUES(#{username},#{birthday},#{sex},#{address})
+    </insert>
+    <!--更新-->
+    <update id="updateUser"  parameterType="com.itboy.domin.User">
+        UPDATE USER SET username=#{username},birthday=#{birthday},sex=#{sex},address=#{address}where id=#{id}
+    </update>
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        DELETE FROM USER WHERE id=#{uid}
+    </delete>
+    <!--根据条件查询一条信息-->
+    <select id="findOne"  parameterType="int" resultType="com.itboy.domin.User" >
+        select * from user where id=#{id}
+    </select>
+    <!--分页查询-->
+    <select id="pages" parameterType="map" resultType="com.itboy.domin.User" >
+        select * from user   limit #{Startindex},#{pageSize}
+    </select>
+    <!--根据条件模糊查询-->
+    <select id="findName" parameterType="String" resultType="com.itboy.domin.User">
+        select * from user where username like #{username}
+    </select>
+    <!--根据QueryVo添加查询用户-->
+    <select id="findUserVo" parameterType="com.itboy.domin.QueryVo" resultType="com.itboy.domin.User">
+        select * from user where username like #{user.username}
+    </select>
+</mapper>

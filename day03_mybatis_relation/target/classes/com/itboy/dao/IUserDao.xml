@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itboy.dao.IUserDao">
+    <!--配置结果集，查询的结果集和数据库的属性名对应关系-->
+   <resultMap id="userAccountMap" type="user">
+       <id property="id" column="id"></id>
+       <result property="username" column="username"></result>
+       <result property="address" column="address"></result>
+       <result property="sex" column="sex"></result>
+       <result property="birthday" column="birthday"></result>
+       <!--配置user对象中accounts集合映射 一对多-->
+       <!--<collection property="accounts" ofType="account">-->
+           <!--<id property="id" column="aid"></id>-->
+           <!--<result property="uid" column="uid"></result>-->
+           <!--<result property="money" column="money"></result>-->
+       <!--</collection>-->
+       <!--配置user对象中roles集合映射 多对多-->
+       <collection property="roles" ofType="role">
+           <id property="roleId" column="id"></id>
+           <result property="roleName" column="role_name"></result>
+           <result property="roleDesc" column="role_desc"></result>
+       </collection>
+   </resultMap>
+
+    <!--查询  有了resultMap  resultType可以更改为resultMap=“userMap” -->
+    <!--<select id="findAll" resultMap="userAccountMap">-->
+      <!--SELECT * from user u LEFT OUTER JOIN account a on a.uid=u.id-->
+    <!--</select>-->
+    <!--多对多-->
+    <select id="findAll" resultMap="userAccountMap">
+    select u.*,r.id as rid,r.role_name,r.role_desc  from user u
+     left outer join user_role ur on u.id=ur.uID
+     left outer join role r on r.id =ur.rid
+    </select>
+    <!--根据条件查询一条信息-->
+    <select id="findOne"  parameterType="int" resultType="com.itboy.domin.User" >
+        select * from user where id=#{id}
+    </select>
+
+</mapper>
